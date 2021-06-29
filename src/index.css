@@ -19,5 +19,5 @@ code {
 }
 
 .Item{
-
+  touch-action: none
 }
