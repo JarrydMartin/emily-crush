@@ -4,8 +4,7 @@ import { useDrag } from 'react-use-gesture'
 import { BoardContext } from './Board'
 
 export type itemProps = {
-    id: number
-    pos: {x:number,y:number}
+    pos: number
     type: '🍬' | '🍪'
 }
 const Item = (props:itemProps) => {
@@ -14,30 +13,69 @@ const Item = (props:itemProps) => {
     const [board, setBoard] = useContext(BoardContext);
 
     const bind = useDrag(({down, movement: [mx, my] }) => {
-        api.start({ x: down ? mx : 0, y: down ? my : 0 });
-        if(my > 0 && !down) {
-            console.log("swap with down");
-            const swapItem = {...board[props.id + 8], id:props.id}
-            const newBoard:itemProps[]  = []
-            board.map(item => {
-                if(item.id ===props.id ){
-                newBoard.push(swapItem)
-                } else if (item.id === props.id + 8) {
-                newBoard.push({...props, id:props.id + 8})
-                } else {
-                newBoard.push(item)
-                }   
-            });
-            setBoard(newBoard);
+        const maxX = mx > 0 ? ( mx < 64 ? mx : 64) : mx > -64 ? mx : -64
+        const maxY = my > 0 ? ( my < 64 ? my : 64) : my > -64 ? my : -64
+        api.start({ x: down ? maxX : 0 , y: down ? maxY : 0 });
+        const threshHold = 32
+        
+        if(my > threshHold  && props.pos + 8 < 64) {
+            if(!down){
+                SwapDown()
+            }
+        } else if(my < -threshHold  && props.pos - 8 > 0) {
+            if(!down){
+            SwapUp()
+            }
+        } else if(mx > threshHold  && (props.pos + 1 ) % 8 != 0) {
+            if(!down){
+                SwapRight()
+            }
+        }else if(mx < -threshHold  && (props.pos) % 8 != 0) {
+            if(!down){
+                SwapLeft()
+            }
         }
 
+        function SwapDown() {
+            swap(8)
+        }
+        function SwapUp() {
+            swap(-8)
+        }
+        function SwapRight() {
+            swap(1)
+        }
+        function SwapLeft() {
+            swap(-1)
+        }
+
+        function swap(swap: number) {
+            const newBoard: itemProps[] = []
+            board.map(item => {
+                if (item.pos === props.pos) {
+                    newBoard.push({ ...board[props.pos + swap], pos: board[props.pos].pos })
+                } else if (item.pos === props.pos + swap) {
+                    newBoard.push({ ...board[props.pos], pos: board[props.pos + swap].pos })
+                } else {
+                    newBoard.push(item)
+                }
+            })
+            setBoard(newBoard)
+        }
+
+        
       });
 
     return (
         <animated.div {...bind()} style={{ x, y }} className="Item">
-            {[props.type]} 
+          {[props.type]} 
         </animated.div>
     )
+}
+
+const swapPos = (a:itemProps,b:itemProps) => {
+    return [{...a, pos:b.pos},{...b} ]
+
 }
 
 export default Item

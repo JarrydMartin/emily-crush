@@ -14,8 +14,8 @@ code {
 
 .Board{
   display: grid;
-  grid-template-columns: 32px 32px 32px 32px 32px 32px 32px 32px;
-  grid-template-rows:  32px 32px 32px 32px 32px 32px 32px;
+  grid-template-columns: 48px 48px 48px 48px 48px 48px 48px 48px;
+  grid-template-rows:  48px 48px 48px 48px 48px 48px 48px 48px;
 }
 
 .Item{

@@ -11,8 +11,7 @@ const Board = () => {
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 newBoard.push({
-                    id: ((y * 8) + x) ,
-                    pos: {x:x, y:y},
+                    pos: ((y * 8) + x) ,
                     type: Math.random() > 0.5 ? '🍬' : '🍪'
                 })
             }
