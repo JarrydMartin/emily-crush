@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import Item, { itemProps } from './Item';
+
+export const BoardContext = createContext<[itemProps[], React.Dispatch<React.SetStateAction<itemProps[]>>]>(null!)
 
 const Board = () => {
     const [board, setBoard] = useState<itemProps[]>([])
@@ -9,8 +11,8 @@ const Board = () => {
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 newBoard.push({
-                    id: ((y * 8) + x).toString() ,
-                    pos: [x, y],
+                    id: ((y * 8) + x) ,
+                    pos: {x:x, y:y},
                     type: Math.random() > 0.5 ? '🍬' : '🍪'
                 })
             }
@@ -22,9 +24,11 @@ const Board = () => {
         initBoard()
     }, [])
     return (
-        <div className="Board">
-            {board.map(item => <Item key={item.id} {...item} />)}
-        </div>
+        <BoardContext.Provider value={[board, setBoard]}>
+            <div className="Board">
+                {board.map(item => <Item {...item} />)}
+            </div>
+        </BoardContext.Provider>
     )
 }
 
