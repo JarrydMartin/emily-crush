@@ -8,3 +8,8 @@ export type Hearts = "❤️" | "🧡" | "💛" | "💚" | "💙" | "💜";
 export type ItemTypes = Hearts | "⚡" | "🔥" | " ";
 
 export type Direction = "up" | "down" | "left" | "right" | "middle";
+
+export type DragDirectionEvent = {
+    forItem: number;
+    move: Direction;
+};
