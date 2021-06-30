@@ -1,21 +1,27 @@
 import React, { createContext, useEffect, useState } from "react";
-import Item, { itemProps, itemTypes } from "./Item";
+import Item from "./Item";
+import Heart from "./Heart";
+import { ItemProps, ItemTypes } from "../lib/Item-Types";
+import { useRandItem } from "../lib/Item-hooks";
 
 export const BoardContext = createContext<
-    [itemProps[], React.Dispatch<React.SetStateAction<itemProps[]>>]
+    [ItemProps[], React.Dispatch<React.SetStateAction<ItemProps[]>>]
 >(null!);
 
 const Board = () => {
-    const [board, setBoard] = useState<itemProps[]>([]);
+    const [board, setBoard] = useState<ItemProps[]>([]);
+
+    const [rndType] = useRandItem();
 
     const initBoard = () => {
-        const newBoard: itemProps[] = [];
-        const possibleTypes: itemTypes[] = ["❤️", "💙", "💚", "💛", "💜", "🧡"];
+        const newBoard: ItemProps[] = [];
+
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 newBoard.push({
-                    pos: y * 8 + x,
-                    type: possibleTypes[Math.floor(Math.random() * 6)],
+                    index: y * 8 + x,
+                    pos: { x: x * 32, y: y * 32 },
+                    type: rndType(),
                 });
             }
         }
@@ -25,11 +31,12 @@ const Board = () => {
     useEffect(() => {
         initBoard();
     }, []);
+
     return (
         <BoardContext.Provider value={[board, setBoard]}>
             <div className="Board">
                 {board.map((item) => (
-                    <Item key={item.pos} {...item} />
+                    <Item {...item} />
                 ))}
             </div>
         </BoardContext.Provider>
