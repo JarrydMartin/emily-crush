@@ -1,7 +1,10 @@
+import { BehaviorSubject } from "rxjs";
+
 export type ItemProps = {
     index: number;
     pos: Pos;
     type: ItemTypes;
+    dragDirectionSubject: BehaviorSubject<DragDirectionEvent>;
 };
 export type Pos = { x: number; y: number };
 export type Hearts = "❤️" | "🧡" | "💛" | "💚" | "💙" | "💜";
